@@ -1,0 +1,76 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter un livre</title>
+    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#"><i class="fa-solid fa-shrimp fa-shake fa-lg" style="color: #ffffff;" fa-lg></i></a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarColor01">
+            <ul class="navbar-nav me-auto">
+              <li class="nav-item">
+                <a class="nav-link active" href="{% url 'index' %}">Accueil
+                  <span class="visually-hidden">(current)</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'pilealire' %}"><i class="fa-solid fa-book-bookmark fa-lg" style="color: #ffffff;"></i> Ma pile à lire</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'ajout' %}"><i class="fa-solid fa-heart fa-lg" style="color: #ffffff;"></i> Ajouter un livre</a>
+              </li>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <div class="container-fluid">
+        {% block body %} 
+
+        <h3 class=" text-center m-4" style="color:#593196">Ajouter un livre</h3>
+        {% if success %}
+          <div class="alert alert-success" role="alert">
+            Potentielle pépite ajoutée à la pile à lire ! 
+            <a href="{% url 'pilealire' %}" class="alert-link">Clique ici pour l'observer amoureusement dans la liste</a>
+          </div>
+        {% else %}
+          <div class="row justify-conent-center">
+            <div class="col-6">
+              <div class="card text-white bg-primary mb-3" style="width: 100%;">
+                <div class="card-header"><i class="fa-solid fa-star" fa-lg style="color: #ffffff;"></i> Potentielle pépite</div>
+                <div class="card-body">
+                  <form action="{% url 'ajout' %}" method="POST">
+                    {% csrf_token %}
+                    {{ form }}<br>
+                    <button type="submit" class="btn btn-secondary">Ajouter</button>
+                    <a href="{% url 'pilealire' %}" class="btn btn-secondary">Annuler</a>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+
+        {% endblock %}   
+      </div>
+      <footer class="mt-auto mb-4">
+        <div class="text-center">
+          <span>
+            Copyright &copy; <script>document.write(new Date().getFullYear())</script> Site de la Crevette
+          </span>
+        </div>
+      </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
