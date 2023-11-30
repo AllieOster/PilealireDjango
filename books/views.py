@@ -10,9 +10,6 @@ def index(request):
 
 def pilealire(request):
     data = Books.objects.all()
-    context = {
-        'data' : data
-    }
     return render(request, "pilealire.html", {'Books': Books.objects.all()})
 
 
@@ -25,40 +22,52 @@ def view_book(request):
 def ajout(request):
     if request.method == 'POST' :
 
-        new_book = Books(
-            titre_livre =  request.POST['titre_livre'],
-            nom_auteurice = request.POST['nom_auteurice'],
-            prenom_auteurice =  request.POST['prenom_auteurice'],
-            couverture=request.POST["couverture"])
+        form = BooksForm(request.POST, request.FILES)
+        if form.is_valid():
 
-        new_book.save()
+            new_book = Books(
+                titre_livre = form.cleaned_data.get('titre_livre'),
+                nom_auteurice = form.cleaned_data.get('nom_auteurice'),
+                prenom_auteurice =  form.cleaned_data.get('prenom_auteurice'),
+                couverture= form.cleaned_data.get('couverture'))
+
+            new_book.save()
+        
+        else:
+            print("Form was not valid!")
+        
         return render(request, 'ajout.html', {
             'form' : BooksForm(),
             'success' : True
             })
 
-    print('else')
     return render(request, 'ajout.html', {'form' : BooksForm() })
 
 
 def edit(request, id):
+    book = Books.objects.get(pk=id)
+
     if request.method == 'POST':
-        books = Books.objects.get(pk=id)
+        form = BooksForm(request.POST, request.FILES, instance=book)
 
-        books.titre_livre =  request.POST['titre_livre']
-        books.nom_auteurice = request.POST['nom_auteurice']
-        books.prenom_auteurice =  request.POST['prenom_auteurice']
-        books.couverture=request.POST["couverture"]
-        books.save()
-        
-        return render(request, 'edit.html', {
-        'form': BooksForm(),
-        'success' : True
-            })
+        if form.is_valid():
+
+            book.titre_livre = request.POST['titre_livre']
+            book.nom_auteurice = request.POST['nom_auteurice']
+            book.prenom_auteurice =  request.POST['prenom_auteurice']
+            new_couverture = request.POST['couverture'] 
+            if new_couverture:
+                book.couverture = new_couverture
+
+            book.save()
+            return render(request, 'edit.html', {'form' : form, 'success' : True })
     else:
-        books = Books.objects.get(pk=id)
-        form = BooksForm(instance=Books)
-    return render(request, 'edit.html', {
-        'form': form
-    })    
+        form = BooksForm(instance=book)
+        return render(request, 'edit.html', {'form' : form })
+             
 
+def delete(request, id):
+    if request.method == "POST":
+           book = Books.objects.get(pk=id)
+           book.delete()
+    return HttpResponseRedirect(reverse('pilalire'))

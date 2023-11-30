@@ -50,7 +50,7 @@
               <div class="card text-white bg-primary mb-3" style="width: 100%;">
                 <div class="card-header"><i class="fa-solid fa-star" fa-lg style="color: #ffffff;"></i> Potentielle pépite</div>
                 <div class="card-body">
-                  <form action="{% url 'ajout' %}" method="POST">
+                  <form action="{% url 'ajout' %}" method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     {{ form }}<br>
                     <button type="submit" class="btn btn-secondary">Ajouter</button>
